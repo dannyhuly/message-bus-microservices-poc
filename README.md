@@ -3,10 +3,26 @@
 The following demo is a Typescript implantation of Message Bus.
 
 ### flowchart
-[![](https://mermaid.ink/img/pako:eNqNkE1rwzAMhv-K0WmFlN3D2GErrJdCRwOF2TkIW2lN_BH8sVKa_vd5c2CHXaaL3lc8L0K6gfSKoIXB-Is8Y0is2wjHSr0aTS498Nr7FVuvn9m87br9zN4w0QWvFVwMX3rPngo5jziMyKbgVZb0KL2L2dLMdhQjnuglxxr-9ZwvmhXD3jNl6vsKbckYf_TBqAOFTy2J_5n8fys0YClY1KqcffteICCdyZKAtkiFYRQg3L1wmJM_XJ2ENoVMDeRJlRs3Gk8BLbQDmlimpHTyYVf_-PPOBiZ0H97bGrx_AZMSfGw?type=png)](https://mermaid.live/edit#pako:eNqNkE1rwzAMhv-K0WmFlN3D2GErrJdCRwOF2TkIW2lN_BH8sVKa_vd5c2CHXaaL3lc8L0K6gfSKoIXB-Is8Y0is2wjHSr0aTS498Nr7FVuvn9m87br9zN4w0QWvFVwMX3rPngo5jziMyKbgVZb0KL2L2dLMdhQjnuglxxr-9ZwvmhXD3jNl6vsKbckYf_TBqAOFTy2J_5n8fys0YClY1KqcffteICCdyZKAtkiFYRQg3L1wmJM_XJ2ENoVMDeRJlRs3Gk8BLbQDmlimpHTyYVf_-PPOBiZ0H97bGrx_AZMSfGw)
+```mermaid
+flowchart TD
+    Client([Client]) --> |HTTP| Gateway
+    Gateway[Gateway] <-->|kafka produce/consume| MessageBus
+    MessageBus[[Message Bus Queue]]
+    HelloWorldService[HelloWorldService] <-->|kafka produce/consume| MessageBus
+```
 
 ### sequence diagram
-[![](https://mermaid.ink/img/pako:eNqVklFLwzAQx79KzJNiq-95GKgt20PHxBUGUpAjOWcxTWrSKKX0u3tdNh0MZOYhhLvc7__n7gYurUIuuMePgEZiVsPWQVMZRgdkZx170DWaLkbiHSPpbHY9hw6_oBdsnpfsNmb3MUov0XvY4n3wgrXOqiDxkpi1NYIt8qJYvWxWT0WWsBZ6bUEJloEx_VXk_FZPSgvU2m6s02qN7rOWKJi0xofmPOTe-QklJXZ6ps8bh63uj9A7WhS4YEN2V-bjQejIPCn8tOkPy_-hH1o8mY_DoO9l-cgc-pYkkCe8QddArWi2w1RU8e4NG6y4oKcC917xyoz0D0Jn172RXHQuYMJDq4i-3wMuXkF7iqKqaReWcVl2O5PwFsyztU0sHL8B3AvDGQ?type=png)](https://mermaid.live/edit#pako:eNqVklFLwzAQx79KzJNiq-95GKgt20PHxBUGUpAjOWcxTWrSKKX0u3tdNh0MZOYhhLvc7__n7gYurUIuuMePgEZiVsPWQVMZRgdkZx170DWaLkbiHSPpbHY9hw6_oBdsnpfsNmb3MUov0XvY4n3wgrXOqiDxkpi1NYIt8qJYvWxWT0WWsBZ6bUEJloEx_VXk_FZPSgvU2m6s02qN7rOWKJi0xofmPOTe-QklJXZ6ps8bh63uj9A7WhS4YEN2V-bjQejIPCn8tOkPy_-hH1o8mY_DoO9l-cgc-pYkkCe8QddArWi2w1RU8e4NG6y4oKcC917xyoz0D0Jn172RXHQuYMJDq4i-3wMuXkF7iqKqaReWcVl2O5PwFsyztU0sHL8B3AvDGQ)
+```mermaid
+sequenceDiagram
+    actor Client
+    
+    Client->>+Gateway: GET /
+    Gateway->>MessageBus: produce(action: HELLO_WORLD, payload: Danny)
+    MessageBus->>+HelloWorldService: consume(action: HELLO_WORLD, payload: Danny) 
+    HelloWorldService-->>-MessageBus: produce(action: HELLO_WORLD.reply, payload: Hello Danny! {DATE}) 
+    MessageBus-->>Gateway: consume(action: HELLO_WORLD.reply, payload: Hello Danny! {DATE}) 
+    Gateway-->>-Client: HTTP response
+```
 
 ### Prerequisite
 
